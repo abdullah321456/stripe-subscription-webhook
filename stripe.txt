@@ -1,0 +1,5 @@
+1.download stripe.exe
+2.login to strip and run 
+3.please  check if u added events for webhook if you are using remote webhook.
+stripe listen --forward-to localhost:4242/webhook
+stripe trigger payment_intent.succeeded
