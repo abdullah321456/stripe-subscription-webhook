@@ -1,6 +1,6 @@
 const express = require('express');
 const stripUtils = require("./utils/stripe");
-const app = express();
+const index = express();
 const admin = require('firebase-admin');
 const serviceAccount = require('./services-account');
 
@@ -8,7 +8,7 @@ const serviceAccount = require('./services-account');
 let server;
 
 
-server = app.listen(process.env.PORT || 5000, () => console.log(`Running on port ${process.env.PORT || 5000}`));
+server = index.listen(process.env.PORT || 5000, () => console.log(`Running on port ${process.env.PORT || 5000}`));
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
@@ -84,7 +84,7 @@ const deleteSubscriptionBySubscriptionId=async (subscription_id)=>{
 
 // Match the raw body to content type application/json
 // If you are using Express v4 - v4.16 you need to use body-parser, not express, to retrieve the request body
-app.post('/webhook', express.json({type: 'application/json'}),  (request, response) => {
+index.post('/webhook', express.json({type: 'application/json'}),  (request, response) => {
     const event = request.body;
 
 console.log("event received = ", event.type);
@@ -108,7 +108,7 @@ switch (event.type) {
         break;
     case 'customer.subscription.deleted':
         const deleteSubscription = event.data.object;
-        deleteSubscriptionById(deleteSubscription.id);
+        deleteSubscriptionBySubscriptionId(deleteSubscription.id);
         break;
     case 'invoice.payment_failed':
         const invoiceFailed = event.data.object;
@@ -125,7 +125,7 @@ switch (event.type) {
 response.json({received: true});
 });
 
-app.get('/', (req, res) => {
+index.get('/', (req, res) => {
     res.json({success: true, msg: "server is running"})
 })
 
