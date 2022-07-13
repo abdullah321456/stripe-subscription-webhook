@@ -47,13 +47,13 @@ if (server) {
 
 
 const updateUserSubscriptionByUserId=async (id,subscription_id,status)=>{
-    if(id) await db.collection('SignupSubscriber').doc(id).update({subscription_id,status});
+    if(id) await db.collection('Subscriber').doc(id).update({subscription_id,status});
 }
 
 
 
 const updateSubscriptionBySubscriptionId=async (subscription_id,status)=>{
-    const find=await db.collection('SignupSubscriber').where("subscription_id", "==",subscription_id).get();
+    const find=await db.collection('Subscriber').where("subscription_id", "==",subscription_id).get();
     let user;
     find.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
@@ -61,20 +61,20 @@ const updateSubscriptionBySubscriptionId=async (subscription_id,status)=>{
         return
     });
 
-    if(user && user.id) await db.collection('SignupSubscriber').doc(user.id).update({subscription_id,status});
+    if(user && user.id) await db.collection('Subscriber').doc(user.id).update({subscription_id,status});
 }
 
 
 const deleteSubscriptionBySubscriptionId=async (subscription_id)=>{
 
-    const find=await db.collection('SignupSubscriber').where("subscription_id", "==",subscription_id).get();
+    const find=await db.collection('Subscriber').where("subscription_id", "==",subscription_id).get();
     let user;
     find.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         user=doc.data();
         return
     });
-    if(user && user.id) await db.collection('SignupSubscriber').doc(user.id).update({subscription_id:null,status:"deleted"});
+    if(user && user.id) await db.collection('Subscriber').doc(user.id).update({subscription_id:null,status:"deleted"});
 }
 
 
