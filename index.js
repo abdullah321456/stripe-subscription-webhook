@@ -3,7 +3,7 @@ const stripUtils = require("./utils/stripe");
 const index = express();
 const admin = require('firebase-admin');
 const serviceAccount = require('./services-account');
-
+const axios=require("axios");
 
 let server;
 
@@ -30,7 +30,6 @@ const exitHandler = () => {
 };
 
 const unexpectedErrorHandler = (error) => {
-    logger.error(error);
     exitHandler();
 };
 
@@ -74,11 +73,20 @@ const deleteSubscriptionBySubscriptionId=async (subscription_id)=>{
         user=doc.data();
         return
     });
+
+
     if(user && user.id) await db.collection('Subscriber').doc(user.id).update({subscription_id:null,status:"deleted"});
+    if(user && user.email) sendEmail(user.email,"Cancel Subscription","Your subscription is expired.")
 }
 
 
-
+const sendEmail=async (email,subject,text)=>{
+    try{
+       await axios.post("https://stripe-stepout.herokuapp.com/sendmail",{email,subject,text});
+    }catch (e) {
+        console.log(e);
+    }
+}
 
 
 
